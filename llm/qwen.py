@@ -20,3 +20,20 @@ def callQwen(audio):
         {'text': 'you are my assistant, please give brief bullet point summary from this sound'},
     ])
     return model.chat(tokenizer, query=query, history=None)
+
+
+def callMeetingSummary(audio):
+    query = tokenizer.from_list_format([
+        {'audio': audio},
+        {'text': 
+         '''you are virtual assistant, this audio is a meeting recording between Alibaba Cloud and Customers in Bahasa Indonesia. 
+         please provide the meeting summary and also gather the customer requirements, and also please analyze the possible sales pipeline from this meeting recording. 
+         please give the output strictly as this, I don't want any other format answer other than this! :
+
+         Summary:
+         Customer Requirements:
+         Possible pipeline: 
+         
+         '''},
+    ])
+    return model.chat(tokenizer, query=query, history=None)

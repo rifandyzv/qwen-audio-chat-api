@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from typing import Annotated
 from function import isVideoFile, videoToAudioConverter, isAudioFile
-from llm.qwen import callQwen
+from llm.qwen import callQwen, callMeetingSummary
 
 import os
 
@@ -58,6 +58,29 @@ async def upload_file(file: UploadFile):
 
 
     res = callQwen(audio=input_path)
+    
+
+    return {'answer': res}
+    # return FileResponse(audio_path, media_type="audio/mpeg", filename="output.mp3")
+
+
+@app.post("/analyzeMeeting")
+async def meetingRecording(file: UploadFile):
+    print(file.filename)
+
+
+    if isVideoFile(file.filename):
+        video_path = f"./tmp/input.mp4"
+
+        with open(video_path, "wb") as f:
+            f.write(file.file.read())
+
+        videoToAudioConverter(video_path)
+
+    # input_path = f"./tmp/output.mp3"
+
+
+    res = callMeetingSummary(audio="./tmp/output.mp3")
     
 
     return {'answer': res}
