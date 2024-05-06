@@ -5,9 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from typing import Annotated
 from function import isVideoFile, videoToAudioConverter, isAudioFile
-from llm.qwen import callQwen, callMeetingSummary
+from llm.qwen import callQwen, generateMeetingSummary
 
-import os
+
 
 
 app = FastAPI()
@@ -22,7 +22,7 @@ app.add_middleware(
 
     
 @app.post("/analyzeVideo")
-async def upload_file(file: UploadFile):
+async def uploadVideoFile(file: UploadFile):
     print(file.filename)
     print(isVideoFile(file.filename))
     if not isVideoFile(file.filename):
@@ -43,7 +43,7 @@ async def upload_file(file: UploadFile):
     # return FileResponse(audio_path, media_type="audio/mpeg", filename="output.mp3")
 
 @app.post("/analyzeAudio")
-async def upload_file(file: UploadFile):
+async def uploadAudioFile(file: UploadFile):
     print(file.filename)
     print(isAudioFile(file.filename))
     if not isAudioFile(file.filename):
@@ -65,7 +65,7 @@ async def upload_file(file: UploadFile):
 
 
 @app.post("/analyzeMeeting")
-async def meetingRecording(file: UploadFile):
+async def analyzeMeeting(file: UploadFile):
     print(file.filename)
 
 
@@ -80,7 +80,7 @@ async def meetingRecording(file: UploadFile):
     # input_path = f"./tmp/output.mp3"
 
 
-    res = callMeetingSummary(audio="./tmp/output.mp3")
+    res = generateMeetingSummary(audio="./tmp/output.mp3")
     
 
     return {'answer': res}

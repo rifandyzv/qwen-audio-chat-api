@@ -26,8 +26,13 @@ def callMeetingSummary(audio):
     query = tokenizer.from_list_format([
         {'audio': audio},
         {'text': 
-         '''you are virtual assistant, this audio is a meeting recording between Alibaba Cloud and Customers in Bahasa Indonesia. 
-         please provide the meeting summary and also gather the customer requirements, and also please analyze the possible sales pipeline from this meeting recording. 
+         '''
+         you are virtual assistant, this audio is a meeting recording between Alibaba Cloud and Customers 
+         please provide these from the audio:
+         *brief summary
+         *the customer requirements
+         *analyze the possible sales pipeline from this meeting recording. 
+         
          please give the output strictly as this, I don't want any other format answer other than this! :
 
          Summary:
@@ -37,3 +42,46 @@ def callMeetingSummary(audio):
          '''},
     ])
     return model.chat(tokenizer, query=query, history=None)
+
+
+def generateMeetingSummary(audio):
+
+
+    initiator = tokenizer.from_list_format([
+    {'audio': audio}, # Either a local path or an url
+    {'text': 
+         '''
+         you are virtual assistant, this audio is a meeting recording between Alibaba Cloud and Customers 
+         please provide these from the audio:
+         *brief summary
+         *the customer requirements
+         *analyze the possible sales pipeline from this meeting recording. 
+         
+         please give the output strictly as this, I don't want any other format answer other than this! :
+
+         Summary:
+         Customer Requirements:
+         Possible pipeline: 
+         
+         '''},
+    ])
+    questions =  [
+         'please give bullets point from that meeting discussion',
+         'from your perspective what can alibaba provides to customer according to that meeting discussion', 
+         'how about user requirements? do you get any information from that meeting discussion for customer requirements?',
+         'please answer just shortly in one or two sentences, from this meeting discussion what do you thing the customer sentiment about alibaba cloud?'
+         ]
+    
+    answers = {'summary': '', 'customerRequirements': '', 'opportunity': ''}
+
+    text, history = model.chat(tokenizer, query=initiator, history=None)
+
+    answers['summary'], history = model.chat(tokenizer, query=questions[0], history=history)
+
+    answers['customerRequirements'], history = model.chat(tokenizer, query=questions[1], history=history)
+
+    answers['opportunity'], history = model.chat(tokenizer, query=questions[2], history=history)
+
+    answers['additionalInfo'], history =  model.chat(tokenizer, query=questions[3], history=history)
+
+    return answers
