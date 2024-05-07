@@ -13,7 +13,7 @@ def videoToAudioConverter(video_file, output_ext="mp3"):
 
 def isVideoFile(filename):
     video_file_extensions = (
-        '264', '3g2', '3gp', '3gp2', '3gpp', '3gpp2', 'mp4', 'mkv', 'flv' 
+        '264', '3g2', '3gp', '3gp2', '3gpp', '3gpp2', 'mp4', 'mkv', 'flv', 'mov'
     )
     file_extension = filename.lower().split('.')[-1]
     return file_extension in video_file_extensions

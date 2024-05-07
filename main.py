@@ -77,10 +77,12 @@ async def analyzeMeeting(file: UploadFile):
 
         videoToAudioConverter(video_path)
 
-    # input_path = f"./tmp/output.mp3"
+    input_path = f"./tmp/output.mp3"
+    with open(input_path, "wb") as f:
+        f.write(file.file.read())
 
 
-    res = generateMeetingSummary(audio="./tmp/output.mp3")
+    res = generateMeetingSummary(audio=input_path)
     
 
     return {'answer': res}
